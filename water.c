@@ -39,8 +39,10 @@ int main()
             despejo(lista_potes, pote_retirado, pote_despejado);
         }
         imprimePotes(lista_potes, 2);
-        if(checagemCores(lista_potes, fase) == 0)
+        if(checagemCores(lista_potes, fase*2) == 0)
         {
+            printf("\n");
+            printf("Parabens! Voce passou pela fase %d!\n", fase);
             fase++;
             geraFase(lista_potes, fase, cores);
         }
@@ -86,42 +88,53 @@ void imprimePotes(pote p[], int qtd_potes)
             printf("|");
         }
         printf("\n");
-        }
+    }
 }
-
 void geraFase(pote p[], int fase, char cores[][8])
 {
+    char color1[8], color2[8];
+    int c1 = rand()%6;
+    int c2 = rand()%6;
+    int conta_c1 = 0;
+    int conta_c2 = 0;
     switch (fase)
     {
-        case 1: // FASE 1 (2 FRASCOS, 1 COR)
+        case 1:
+        strcpy(color1, cores[c1]);
+        strcpy(color2, cores[c2]);
+        char cores_fase[2][8];
+        strcpy(cores_fase[0], color1);
+        strcpy(cores_fase[1], color2);
         for(int numero_pote = 0; numero_pote < 2; numero_pote++)
         {
             for(int posicao_cor = 1; posicao_cor < TAM; posicao_cor++)
             {
-                strcpy(p[numero_pote].cor[posicao_cor], cores[rand()%2]);
+                strcpy(p[numero_pote].cor[posicao_cor], cores_fase[rand()%2]);
             }
         }
         imprimePotes(p, 2);
         break;
-        case 2: // FASE 2(3 FRASCOS, 2 CORES)
-        for(int numero_pote = 0; numero_pote < 2; numero_pote++)
-        {
-            for(int posicao_cor = 1; posicao_cor < TAM; posicao_cor++)
+        case 2: 
+            for(int numero_pote = 0; numero_pote < 2; numero_pote++)
             {
-                strcpy(p[numero_pote].cor[posicao_cor], cores[rand()%4]);
+                for(int posicao_cor = 1; posicao_cor < TAM; posicao_cor++)
+                {
+                    strcpy(p[numero_pote].cor[posicao_cor], cores[rand()%4]);
+                }
             }
-        }
-        imprimePotes(p, 4);
+            imprimePotes(p, 4);
+            break;
         case 3: // FASE 3(5 FRASCOS (2 VAZIOS), 3 CORES)
-        for(int numero_pote = 0; numero_pote < 3; numero_pote++)
-        {
-            for(int posicao_cor = 1; posicao_cor < TAM; posicao_cor++)
+            for(int numero_pote = 0; numero_pote < 3; numero_pote++)
             {
-                strcpy(p[numero_pote].cor[posicao_cor], cores[rand()%6]);
+                for(int posicao_cor = 1; posicao_cor < TAM; posicao_cor++)
+                {
+                    strcpy(p[numero_pote].cor[posicao_cor], cores[rand()%6]);
+                }
             }
+            imprimePotes(p, 6);
+            break;
         }
-        imprimePotes(p, 6);
-    }
 }
 
 void despejo(pote p[], int pote_retirado, int pote_despejado)
@@ -154,7 +167,7 @@ void despejo(pote p[], int pote_retirado, int pote_despejado)
     }
     else
     {
-        //selecionar o primeiro elemento nao-nulo do pote despejado e colocar o retirado
+        
         for(int i = 0; i < TAM; i++)
         {
             if(strcmp(p[pote_retirado].cor[i], "VAZIO") != 0)
@@ -164,7 +177,7 @@ void despejo(pote p[], int pote_retirado, int pote_despejado)
                 break;
             }
         }
-        //selecionar o ultimo elemento nulo do pote despejado e colocar o retirado
+        
         for(int j = 4; j >= 0; j--)
         {
             if(strcmp(p[pote_despejado].cor[j], "VAZIO") == 0)
@@ -185,23 +198,20 @@ int checagemCores(pote p[], int qtdpotes)
     for(int i = 0; i < qtdpotes; i++)
     {
         for(int j = 0; j < TAM; j++)
-        {
-            if(strcmp(p[i].cor[j], "VAZIO") != 0)
             {
-                strcpy(corHomogenea, p[i].cor[j]);
-                indexCor = j;
-            }
-            for(int k = indexCor; k < TAM; k++)
-            {
-                if(strcmp(p[i].cor[k], "VAZIO") != 0)
+                if(strcmp(p[i].cor[j], "VAZIO") != 0)
                 {
-                    if(strcmp(p[i].cor[k], corHomogenea) != 0)
+                    strcpy(corHomogenea, p[i].cor[j]);
+                    indexCor = j;
+                    for(int k = indexCor; k < TAM; k++)
                     {
-                        contador++;
+                        if(strcmp(p[i].cor[k], corHomogenea) != 0)
+                        {
+                            contador++;
+                        }
                     }
                 }
             }
-        }
     }
     return contador;
 }
